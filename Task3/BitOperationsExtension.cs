@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,106 +30,24 @@ namespace Task3
                 throw  new ArgumentException();
             }
 
-            int[] number1Bin = TransformIntoBinary(number1);
-            if (number1 < 0)
+            if (startPosition < 0 || startPosition > 31 || endPosition < 0 || endPosition > 31)
             {
-                InvertBitsIfNegative(number1Bin);
-            }
-            int[] number2Bin = TransformIntoBinary(number2);
-            if (number2 < 0)
-            {
-                InvertBitsIfNegative(number2Bin);
+                throw new ArgumentException();
             }
 
-            InsertBits(number1Bin, number2Bin, startPosition, endPosition);
+            BitArray number1Bin = new BitArray(new[] { number1 });
+            BitArray number2Bin = new BitArray(new [] { number2 });
 
-            int result = TransformIntoDecimal(number1Bin);
-            return number1 >= 0 ? result : -result;
+            int i = 0;
+            for (int j = startPosition; j <= endPosition; j++)
+            {
+                number1Bin[j] |= number2Bin[i++];
+            }
+
+            int[] result = new int[1];
+            number1Bin.CopyTo(result, 0);
+            return result[0];
         }
-        #endregion
-
-        #region Private members
-        /// <summary>
-        /// Transforms decimal number into binary
-        /// </summary>
-        /// <param name="number">Number to transform</param>
-        /// <returns>Array of bits of the binary number</returns>
-        static int[] TransformIntoBinary(int number)
-        {
-            int[] array = new int[32];
-
-            if (number < 0)
-            {
-                number = -number;
-            }
-
-            int position = 31;
-            for (; number > 0; number /= 2)
-            {
-                array[position--] = number % 2;
-            }
-
-            return array;
-        }
-
-        /// <summary>
-        /// Transforms bits if the source number is negative
-        /// </summary>
-        /// <param name="array">Array of bits of binary number</param>
-        static void InvertBitsIfNegative(int[] array)
-        {
-            for (int i = array.Length - 1; i >= 0; i--)
-            {
-                array[i] = Math.Abs(array[i] - 1);
-            }
-
-            int index = 31;
-            while (true)
-            {
-                array[index]++;
-                if (array[index] != 2)
-                {
-                    break;
-                }
-                index--;
-            }
-        }
-
-        /// <summary>
-        /// Inserts bits of one binary integer into the other, so that the other one will take the position from and up to the specified bits
-        /// </summary>
-        /// <param name="number1">Binary nteger number for inserting the second number into it</param>
-        /// <param name="number2">Binary integer number for inserting it into the first number</param>
-        /// <param name="startPosition">Start position of insertation</param>
-        /// <param name="endPosition">End position of insertation</param>
-        static void InsertBits(int[] number1, int[] number2, int startPosition, int endPosition)
-        {
-            int number2Index = 31;
-            for (int i = endPosition; i >= startPosition; i--)
-            {
-                number1[31 - i] = number2[number2Index--];
-            }
-        }
-
-        /// <summary>
-        /// Transforms binary number into decimal
-        /// </summary>
-        /// <param name="array">Array of bits of the binary number</param>
-        /// <returns>Decimal integer number</returns>
-        static int TransformIntoDecimal(int[] array)
-        {
-            int number = 0;
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (array[i] == 1)
-                {
-                    number += (int) Math.Pow(2, 31 - i);
-                }
-            }
-
-            return number;
-        }
-
         #endregion
     }
 }
