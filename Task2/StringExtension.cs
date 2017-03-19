@@ -19,7 +19,7 @@ namespace Task2
         {
             if (string1 == null || string2 == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             char[] resultString = string.Concat(string1, string2).Distinct().ToArray();

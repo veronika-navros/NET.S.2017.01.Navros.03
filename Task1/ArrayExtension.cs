@@ -19,7 +19,7 @@ namespace Task1
         {
             if (array == null)
             {
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
             }
 
             if (!array.Any() || array.Length > 1000)
